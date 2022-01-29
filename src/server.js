@@ -1,17 +1,16 @@
 import express from "express";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import { notFound, errorHandler } from './middleware/errorMiddleware.js';
+import { notFound, errorHandler } from './middleware/error.middleware.js';
 
 import productRoute from './routes/product.routes.js';
 import categoryRoute from './routes/category.routes.js';
-import authRoute from './routes/auth.routes';
+import authRoute from './routes/auth.routes.js';
 
 const app = express();
 dotenv.config();
-if (process.env.NODE_ENV === "development") {
-    app.use(morgan("dev"));
-}
+app.use(morgan("dev"));
+
 
 app.use(express.json());
 
