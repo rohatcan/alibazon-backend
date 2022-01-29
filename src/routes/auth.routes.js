@@ -8,13 +8,13 @@ import { validateRequestSchema } from "../middleware/validate-payload.middleware
 const router = express.Router();
 
 router.route("/signin").post(
-    registerSchema,
+    loginSchema,
     validateRequestSchema,
     asyncMiddleware(login));
 
 
 router.route("/signup").post(
-    loginSchema,
+    registerSchema,
     validateRequestSchema,
     asyncMiddleware(register));
 

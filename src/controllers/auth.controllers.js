@@ -8,7 +8,7 @@ const register = async(req, res, next) => {
 
 const login = async(req, res) => {
 
-    const user = signIn(req, res);
+    const user = await signIn(req, res);
     res.status(200);
     res.cookie("token", user.token, { maxAge: 9000000, httpOnly: true });
     res.json(user);
