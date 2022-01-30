@@ -6,6 +6,7 @@ import { notFound, errorHandler } from './middleware/error.middleware.js';
 import productRoute from './routes/product.routes.js';
 import categoryRoute from './routes/category.routes.js';
 import authRoute from './routes/auth.routes.js';
+import cartRoute from './routes/cart.routes.js';
 
 const app = express();
 dotenv.config();
@@ -17,6 +18,7 @@ app.use(express.json());
 app.use("/api/products", productRoute);
 app.use('/api/category', categoryRoute);
 app.use('/api/auth', authRoute);
+app.use('/api/cart', cartRoute);
 
 // middlewares
 app.use(notFound);

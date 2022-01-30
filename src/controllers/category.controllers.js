@@ -1,7 +1,7 @@
 import axios from "axios";
 import ash from "express-async-handler";
 import { nextTick } from "process";
-import apiClient from "../utils/api.client.js";
+import apiClient from "../utils/api.utils.js";
 
 
 const getCategories = ash(async(req, res) => {
@@ -39,6 +39,7 @@ const getCategoryWithProducts = async(parentCategory) => {
     }
 
     for (let category of parentCategory) {
+
 
         let subCategoryIds = await getSubCategoriesIds(category);
         console.log("subcategory ids:" + subCategoryIds);
@@ -81,13 +82,5 @@ const getSubCategoriesIds = async(parentCategory) => {
         return category.id;
     });
 };
-
-const errorHandler = (err, req, res, next) => {
-
-    console.log(err.message);
-    console.log("erorrrrr");
-    next();
-};
-
 
 export { getCategories, getCategoryById, getSubCategories, getCategoryWithProducts };
