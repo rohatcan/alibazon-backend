@@ -4,8 +4,9 @@
     "private": true,
     "scripts": {
         "devStart": "nodemon ./src/server.js",
-        "start": "nodemon ./bin/www",
-        "start2": "node ./bin/www"
+        "start": "node ./src/server.js",
+        "start2": "node ./bin/www",
+        "test": "mocha"
     },
     "dependencies": {
         "@sentry/node": "^6.17.3",
