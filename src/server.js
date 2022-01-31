@@ -10,12 +10,16 @@ import categoryRoute from './routes/category.routes.js';
 import authRoute from './routes/auth.routes.js';
 import cartRoute from './routes/cart.routes.js';
 import wishlistRoute from './routes/wishlist.routes.js';
+import orderRoute from './routes/order.routes.js';
 
 import cors from "cors";
 const app = express();
 app.use(cors());
 dotenv.config();
-app.use(morgan("dev"));
+if (process.env.NODE_ENV != 'production') {
+
+    app.use(morgan("dev"));
+}
 
 // Sentry boilerplate
 Sentry.init({
@@ -41,11 +45,14 @@ app.use(Sentry.Handlers.requestHandler());
 // TracingHandler creates a trace for every incoming request
 app.use(Sentry.Handlers.tracingHandler());
 
+// Routes
 app.use("/api/products", productRoute);
 app.use('/api/categories', categoryRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/cart', cartRoute);
 app.use('/api/wishlist', wishlistRoute);
+app.use('/api/orders', orderRoute);
+
 app.get("/api/debug-sentry", function mainHandler(req, res) {
     throw new Error("My first Sentry error!");
 });
@@ -58,4 +65,4 @@ app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log("Now Listening"));
+app.listen(PORT, () => console.log("Now Listening on port:" + PORT));
