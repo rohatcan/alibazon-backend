@@ -4,12 +4,16 @@ import dotenv from "dotenv";
 import { notFound, errorHandler } from './middleware/error.middleware.js';
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
+
 import productRoute from './routes/product.routes.js';
 import categoryRoute from './routes/category.routes.js';
 import authRoute from './routes/auth.routes.js';
 import cartRoute from './routes/cart.routes.js';
+import wishlistRoute from './routes/wishlist.routes.js';
 
+import cors from "cors";
 const app = express();
+app.use(cors());
 dotenv.config();
 app.use(morgan("dev"));
 
@@ -38,9 +42,10 @@ app.use(Sentry.Handlers.requestHandler());
 app.use(Sentry.Handlers.tracingHandler());
 
 app.use("/api/products", productRoute);
-app.use('/api/category', categoryRoute);
+app.use('/api/categories', categoryRoute);
 app.use('/api/auth', authRoute);
 app.use('/api/cart', cartRoute);
+app.use('/api/wishlist', wishlistRoute);
 app.get("/api/debug-sentry", function mainHandler(req, res) {
     throw new Error("My first Sentry error!");
 });
