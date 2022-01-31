@@ -1,13 +1,6 @@
 import apiClient from "../utils/api.utils.js";
 import { getCategoryWithProducts } from "./category.controllers.js";
-/*
 
-    Get Products by Search Params
- */
-// @desc Fetch All products
-// const getProducts = async(req, res) => {
-//     console.log(`get products`);
-// };
 const getProducts = async(req, res) => {
 
     if (req.query.id) {
@@ -30,18 +23,22 @@ const getProductsByCategory = async(req, res) => {
     let parentCategory = [req.query.primary_category_id];
     let categoriesWithProducts = await getCategoryWithProducts(parentCategory);
     let products = [];
-    // console.log('categories wit products ne');
-    // console.log("iki burada mi " + categoriesWithProducts);
-    // // categoriesWithProducts.forEach(async category => {
+    for (const category of categoriesWithProducts) {
+        try {
+            let getProducts = await apiClient.get("/products/product_search", {
+                params: {
+                    secretKey: req.query.secretKey,
+                    primary_category_id: category
+                }
+            });
+            for (const product of getProducts.data) {
+                products.push(product);
+            }
 
-    //     let getProducts = await apiClient.get("/products/product_search", {
-    //         params: {
-    //             secretKey: req.query.API_KEY,
-    //             primary_category_id: category
-    //         }
-    //     });
-    // });
-    // console.log('get product by category');
+        } catch (error) {}
+    }
+    res.json(products);
+
 };
 
 const getProductById = async(req, res) => {

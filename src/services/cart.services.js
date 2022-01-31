@@ -1,4 +1,4 @@
-function cartService(apiClient) {
+function CartService(apiClient) {
 
     const getCart = async(req, res) => {
 
@@ -24,7 +24,7 @@ function cartService(apiClient) {
         };
 
         const cart = await apiClient.post("/cart/addItem", req.body, config);
-        return user.data;
+        return cart.data;
     };
 
     const removeItem = async(req, res) => {
@@ -57,4 +57,4 @@ function cartService(apiClient) {
         changeItemQuantity
     };
 }
-export { cartService };
+export { CartService };

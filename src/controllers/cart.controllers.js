@@ -1,7 +1,7 @@
-import { cartService } from "../services/cart.services.js";
+import { CartService } from "../services/cart.services.js";
 import apiClient from "../utils/api.utils.js";
 
-const cartServiceInstance = new cartService(apiClient);
+const cartServiceInstance = new CartService(apiClient);
 
 const getCart = async(req, res) => {
 
