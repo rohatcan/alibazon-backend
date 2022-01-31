@@ -5,7 +5,7 @@ const getCategories = async(req, res) => {
 
     const category = await apiClient.get(`/categories`, {
         params: {
-            secretKey: process.env.API_KEY
+            secretKey: req.query.secretKey
         }
     });
     res.send(category.data);
@@ -26,7 +26,7 @@ const getSubCategories = async(req, res) => {
 
     const subCategories = await apiClient.get(`/categories/parent/${req.params.id}`, {
         params: {
-            secretKey: process.env.API_KEY
+            secretKey: req.query.secretKey
         }
     });
     res.send(subCategories.data)

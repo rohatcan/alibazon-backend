@@ -66,3 +66,5 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => console.log("Now Listening on port:" + PORT));
+
+export default app;

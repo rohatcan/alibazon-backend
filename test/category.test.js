@@ -7,7 +7,7 @@ chai.should();
 
 chai.use(chaiHttp);
 
-describe('Tasks API', () => {
+describe('Category API', () => {
 
     /**
      * Test the GET route
@@ -16,6 +16,9 @@ describe('Tasks API', () => {
         it("It should GET all the categories", (done) => {
             chai.request(server)
                 .get("/api/categories")
+                .query({
+                    secretKey: process.env.API_KEY
+                })
                 .end((err, response) => {
                     response.should.have.status(200);
                     response.body.should.be.a('array');
@@ -27,7 +30,7 @@ describe('Tasks API', () => {
             chai.request(server)
                 .get("/api/categories")
                 .end((err, response) => {
-                    response.should.have.status(404);
+                    response.should.have.status(401);
                     done();
                 });
         });
@@ -40,182 +43,80 @@ describe('Tasks API', () => {
      */
     describe("GET /api/categories/:id", () => {
         it("It should GET a category by ID", (done) => {
-            const categoryId = 1;
+
+            const categoryId = "mens-clothing-jackets";
             chai.request(server)
-                .get("/api/tasks/" + taskId)
+                .get("/api/categories/" + categoryId)
+                .query({
+                    secretKey: process.env.API_KEY
+                })
                 .end((err, response) => {
                     response.should.have.status(200);
                     response.body.should.be.a('object');
                     response.body.should.have.property('id');
                     response.body.should.have.property('name');
-                    response.body.should.have.property('completed');
-                    response.body.should.have.property('id').eq(1);
+                    response.body.should.have.property('page_description');
+                    response.body.should.have.property('page_title');
+                    response.body.should.have.property('image');
+                    response.body.should.have.property('id').eq(categoryId);
                     done();
                 });
         });
 
-        it("It should NOT GET a task by ID", (done) => {
-            const taskId = 123;
+        it("It should NOT GET a category by ID without secretKey", (done) => {
+            const categoryId = 'mens-clothing-jackets';
             chai.request(server)
-                .get("/api/tasks/" + taskId)
+                .get("/api/categories/" + categoryId)
                 .end((err, response) => {
-                    response.should.have.status(404);
-                    response.text.should.be.eq("The task with the provided ID does not exist.");
+                    response.should.have.status(401);
                     done();
                 });
         });
 
-    });
-
-
-    /**
-     * Test the POST route
-     */
-    describe("POST /api/tasks", () => {
-        it("It should POST a new task", (done) => {
-            const task = {
-                name: "Task 4",
-                completed: false
-            };
+        it("It should NOT GET a category by ID", (done) => {
+            const categoryId = 123;
             chai.request(server)
-                .post("/api/tasks")
-                .send(task)
-                .end((err, response) => {
-                    response.should.have.status(201);
-                    response.body.should.be.a('object');
-                    response.body.should.have.property('id').eq(4);
-                    response.body.should.have.property('name').eq("Task 4");
-                    response.body.should.have.property('completed').eq(false);
-                    done();
-                });
-        });
-
-        it("It should NOT POST a new task without the name property", (done) => {
-            const task = {
-                completed: false
-            };
-            chai.request(server)
-                .post("/api/tasks")
-                .send(task)
+                .get("/api/categories/" + categoryId)
+                .query({
+                    secretKey: process.env.API_KEY
+                })
                 .end((err, response) => {
                     response.should.have.status(400);
-                    response.text.should.be.eq("The name should be at least 3 chars long!");
                     done();
                 });
         });
 
     });
-
 
     /**
-     * Test the PUT route
+     * Test the GET by ParentId route
      */
-    describe("PUT /api/tasks/:id", () => {
-        it("It should PUT an existing task", (done) => {
-            const taskId = 1;
-            const task = {
-                name: "Task 1 changed",
-                completed: true
-            };
+    describe("GET /api/categories/parent/:id", () => {
+
+        it("It should GET all the sub categories of that parent category ", (done) => {
+            const parentId = 'mens-clothing';
             chai.request(server)
-                .put("/api/tasks/" + taskId)
-                .send(task)
+                .get("/api/categories/parent/" + parentId)
+                .query({
+                    secretKey: process.env.API_KEY
+                })
                 .end((err, response) => {
                     response.should.have.status(200);
-                    response.body.should.be.a('object');
-                    response.body.should.have.property('id').eq(1);
-                    response.body.should.have.property('name').eq("Task 1 changed");
-                    response.body.should.have.property('completed').eq(true);
+                    response.body.should.be.a('array');
                     done();
                 });
         });
 
-        it("It should NOT PUT an existing task with a name with less than 3 characters", (done) => {
-            const taskId = 1;
-            const task = {
-                name: "Ta",
-                completed: true
-            };
+        it("It should NOT GET all the sub categories", (done) => {
+            const parentId = 'mens-clothing';
             chai.request(server)
-                .put("/api/tasks/" + taskId)
-                .send(task)
+                .get("/api/categories/parent/" + parentId)
                 .end((err, response) => {
-                    response.should.have.status(400);
-                    response.text.should.be.eq("The name should be at least 3 chars long!");
-                    done();
-                });
-        });
-    });
-
-
-    /**
-     * Test the PATCH route
-     */
-
-    describe("PATCH /api/tasks/:id", () => {
-        it("It should PATCH an existing task", (done) => {
-            const taskId = 1;
-            const task = {
-                name: "Task 1 patch"
-            };
-            chai.request(server)
-                .patch("/api/tasks/" + taskId)
-                .send(task)
-                .end((err, response) => {
-                    response.should.have.status(200);
-                    response.body.should.be.a('object');
-                    response.body.should.have.property('id').eq(1);
-                    response.body.should.have.property('name').eq("Task 1 patch");
-                    response.body.should.have.property('completed').eq(true);
-                    done();
-                });
-        });
-
-        it("It should NOT PATCH an existing task with a name with less than 3 characters", (done) => {
-            const taskId = 1;
-            const task = {
-                name: "Ta"
-            };
-            chai.request(server)
-                .patch("/api/tasks/" + taskId)
-                .send(task)
-                .end((err, response) => {
-                    response.should.have.status(400);
-                    response.text.should.be.eq("The name should be at least 3 chars long!");
-                    done();
-                });
-        });
-    });
-
-
-    /**
-     * Test the DELETE route
-     */
-    describe("DELETE /api/tasks/:id", () => {
-        it("It should DELETE an existing task", (done) => {
-            const taskId = 1;
-            chai.request(server)
-                .delete("/api/tasks/" + taskId)
-                .end((err, response) => {
-                    response.should.have.status(200);
-                    done();
-                });
-        });
-
-        it("It should NOT DELETE a task that is not in the database", (done) => {
-            const taskId = 145;
-            chai.request(server)
-                .delete("/api/tasks/" + taskId)
-                .end((err, response) => {
-                    response.should.have.status(404);
-                    response.text.should.be.eq("The task with the provided ID does not exist.");
+                    response.should.have.status(401);
                     done();
                 });
         });
 
     });
-
-
-
 
 });

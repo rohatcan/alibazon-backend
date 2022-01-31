@@ -12,7 +12,7 @@ const getProducts = async(req, res) => {
     }
     const products = await apiClient.get("/products/product_search", {
         params: {
-            secretKey: process.env.API_KEY,
+            secretKey: req.query.secretKey,
         },
     });
     res.send(products.data);
@@ -45,7 +45,7 @@ const getProductById = async(req, res) => {
 
     const product = await apiClient.get("/products/product_search", {
         params: {
-            secretKey: process.env.API_KEY,
+            secretKey: req.query.secretKey,
             id: req.query.id
         },
     });
